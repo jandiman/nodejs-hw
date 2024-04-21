@@ -8,10 +8,11 @@ const contactsPath = path.join("models", "contacts.json");
 
 const listContacts = async (_req, res, next) => {
   try {
-    const data = await fs.readFile(contactsPath);
+    const data = await fs.promises.readFile(contactsPath);
     const contacts = JSON.parse(data);
     res.json(contacts);
   } catch (error) {
+    console.error("Error reading contacts:", error);
     next(httpError(500, "Internal Server Error"));
   }
 };
@@ -19,7 +20,7 @@ const listContacts = async (_req, res, next) => {
 const getContactById = async (req, res, next) => {
   const { contactId } = req.params;
   try {
-    const data = await fs.readFile(contactsPath);
+    const data = await fs.promises.readFile(contactsPath);
     const contacts = JSON.parse(data);
     const contact = contacts.find((contact) => contact.id === contactId);
 
@@ -29,6 +30,7 @@ const getContactById = async (req, res, next) => {
 
     res.json(contact);
   } catch (error) {
+    console.error("Error getting contact by ID:", error);
     next(httpError(500, "Internal Server Error"));
   }
 };
@@ -48,12 +50,13 @@ const addContact = async (req, res, next) => {
   };
 
   try {
-    const data = await fs.readFile(contactsPath);
+    const data = await fs.promises.readFile(contactsPath);
     const contacts = JSON.parse(data);
     contacts.push(newContact);
-    await fs.writeFile(contactsPath, JSON.stringify(contacts));
+    await fs.promises.writeFile(contactsPath, JSON.stringify(contacts));
     res.status(201).json(newContact);
   } catch (error) {
+    console.error("Error adding contact:", error);
     next(httpError(500, "Internal Server Error"));
   }
 };
@@ -61,12 +64,13 @@ const addContact = async (req, res, next) => {
 const removeContact = async (req, res, next) => {
   const { contactId } = req.params;
   try {
-    let data = await fs.readFile(contactsPath);
+    let data = await fs.promises.readFile(contactsPath);
     let contacts = JSON.parse(data);
     contacts = contacts.filter((contact) => contact.id !== contactId);
-    await fs.writeFile(contactsPath, JSON.stringify(contacts));
+    await fs.promises.writeFile(contactsPath, JSON.stringify(contacts));
     res.json({ message: "Contact deleted" });
   } catch (error) {
+    console.error("Error removing contact:", error);
     next(httpError(500, "Internal Server Error"));
   }
 };
@@ -80,18 +84,19 @@ const updateContact = async (req, res, next) => {
   const { contactId } = req.params;
   const { name, email, phone } = req.body;
   try {
-    let data = await fs.readFile(contactsPath);
+    let data = await fs.promises.readFile(contactsPath);
     let contacts = JSON.parse(data);
     const index = contacts.findIndex((contact) => contact.id === contactId);
     if (index === -1) {
       throw httpError(404, "Contact ID Not Found");
     }
     contacts[index] = { ...contacts[index], name, email, phone };
-    await fs.writeFile(contactsPath, JSON.stringify(contacts));
+    await fs.promises.writeFile(contactsPath, JSON.stringify(contacts));
     res.json(contacts[index]);
   } catch (error) {
+    console.error("Error updating contact:", error);
     next(httpError(500, "Internal Server Error"));
   }
 };
-// prettier-ignore
+//prettier-ignore
 export { listContacts, getContactById, removeContact, addContact, updateContact };

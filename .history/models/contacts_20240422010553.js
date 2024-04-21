@@ -6,17 +6,18 @@ import { contactValidation } from "../validations/validations.js";
 
 const contactsPath = path.join("models", "contacts.json");
 
-const listContacts = async (_req, res, next) => {
+const listContacts = async (_req, res) => {
   try {
     const data = await fs.readFile(contactsPath);
     const contacts = JSON.parse(data);
     res.json(contacts);
   } catch (error) {
-    next(httpError(500, "Internal Server Error"));
+    console.error("Error reading contacts:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-const getContactById = async (req, res, next) => {
+const getContactById = async (req, res) => {
   const { contactId } = req.params;
   try {
     const data = await fs.readFile(contactsPath);
@@ -24,19 +25,20 @@ const getContactById = async (req, res, next) => {
     const contact = contacts.find((contact) => contact.id === contactId);
 
     if (!contact) {
-      throw httpError(404, "Contact ID Not Found");
+      return res.status(404).json({ message: "Contact ID Not Found" });
     }
 
     res.json(contact);
   } catch (error) {
-    next(httpError(500, "Internal Server Error"));
+    console.error("Error getting contact by ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-const addContact = async (req, res, next) => {
+const addContact = async (req, res) => {
   const { error } = contactValidation.validate(req.body);
   if (error) {
-    return next(httpError(400, error.details[0].message));
+    return res.status(400).json({ message: error.details[0].message });
   }
 
   const { name, email, phone } = req.body;
@@ -54,11 +56,12 @@ const addContact = async (req, res, next) => {
     await fs.writeFile(contactsPath, JSON.stringify(contacts));
     res.status(201).json(newContact);
   } catch (error) {
-    next(httpError(500, "Internal Server Error"));
+    console.error("Error adding contact:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-const removeContact = async (req, res, next) => {
+const removeContact = async (req, res) => {
   const { contactId } = req.params;
   try {
     let data = await fs.readFile(contactsPath);
@@ -67,14 +70,15 @@ const removeContact = async (req, res, next) => {
     await fs.writeFile(contactsPath, JSON.stringify(contacts));
     res.json({ message: "Contact deleted" });
   } catch (error) {
-    next(httpError(500, "Internal Server Error"));
+    console.error("Error removing contact:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-const updateContact = async (req, res, next) => {
+const updateContact = async (req, res) => {
   const { error } = contactValidation.validate(req.body);
   if (error) {
-    return next(httpError(400, error.details[0].message));
+    return res.status(400).json({ message: error.details[0].message });
   }
 
   const { contactId } = req.params;
@@ -84,14 +88,21 @@ const updateContact = async (req, res, next) => {
     let contacts = JSON.parse(data);
     const index = contacts.findIndex((contact) => contact.id === contactId);
     if (index === -1) {
-      throw httpError(404, "Contact ID Not Found");
+      return res.status(404).json({ message: "Contact ID Not Found" });
     }
     contacts[index] = { ...contacts[index], name, email, phone };
     await fs.writeFile(contactsPath, JSON.stringify(contacts));
     res.json(contacts[index]);
   } catch (error) {
-    next(httpError(500, "Internal Server Error"));
+    console.error("Error updating contact:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
-// prettier-ignore
-export { listContacts, getContactById, removeContact, addContact, updateContact };
+
+export {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updateContact,
+};
