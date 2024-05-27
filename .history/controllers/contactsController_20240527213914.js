@@ -1,17 +1,15 @@
-import { Contact } from "../models/contactsModel.js";
-// prettier-ignore
-import { contactValidation, favoriteValidation } from "../validations/validation.js";
-import { httpError } from "../helpers/httpError.js";
+import { Contact } from "../models/contactsModel";
+//prettier-ignore
+import { contactValidation, favoriteValidation } from "../validations/validations";
+import { httpError } from "../helpers/httpError";
 
 const getAllContacts = async (_req, res) => {
-  // REFERENCE: https://mongoosejs.com/docs/api/model.html#Model.find()
   const result = await Contact.find();
   res.json(result);
 };
 
 const getContactById = async (req, res) => {
   const { contactId } = req.params;
-  // REFERENCE: https://mongoosejs.com/docs/api/model.html#Model.findById()
   const result = await Contact.findById(contactId);
 
   if (!result) {
@@ -22,14 +20,12 @@ const getContactById = async (req, res) => {
 };
 
 const addContact = async (req, res) => {
-  // Preventing lack of necessary data for contacts (check validations folder)
   const { error } = contactValidation.validate(req.body);
 
   if (error) {
     throw httpError(400, "missing required field");
   }
 
-  // REFERENCE: https://mongoosejs.com/docs/api/model.html#Model.create()
   const result = await Contact.create(req.body);
 
   res.status(201).json(result);
@@ -38,7 +34,6 @@ const addContact = async (req, res) => {
 const deleteContactById = async (req, res) => {
   const { contactId } = req.params;
 
-  // REFERENCE: https://mongoosejs.com/docs/api/model.html#Model.findByIdAndDelete()
   const result = await Contact.findByIdAndDelete(contactId);
 
   if (!result) {
@@ -51,7 +46,6 @@ const deleteContactById = async (req, res) => {
 };
 
 const updateContactById = async (req, res) => {
-  // Preventing lack of necessary data for contacts (check validations folder)
   const { error } = contactValidation.validate(req.body);
   if (error) {
     throw httpError(400, "missing fields");
@@ -59,7 +53,6 @@ const updateContactById = async (req, res) => {
 
   const { contactId } = req.params;
 
-  // REFERENCE: https://mongoosejs.com/docs/api/model.html#Model.findByIdAndUpdate()
   const result = await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
   });
@@ -72,7 +65,6 @@ const updateContactById = async (req, res) => {
 };
 
 const updateStatusContact = async (req, res) => {
-  // Preventing lack of necessary data for favorite (check validations folder)
   const { error } = favoriteValidation.validate(req.body);
   if (error) {
     throw httpError(400, "missing field favorite");
@@ -80,7 +72,6 @@ const updateStatusContact = async (req, res) => {
 
   const { contactId } = req.params;
 
-  // REFERENCE: https://mongoosejs.com/docs/api/model.html#Model.findByIdAndUpdate()
   const result = await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
   });
@@ -92,5 +83,5 @@ const updateStatusContact = async (req, res) => {
   res.json(result);
 };
 
-// prettier-ignore
+//prettier-ignore
 export { getAllContacts, getContactById, addContact, deleteContactById, updateContactById, updateStatusContact};
