@@ -1,0 +1,9 @@
+- .env should match .env.example structure
+- server.js process env and connect mongoose
+
+
+- ./model/contactsModel (schema and model)
+
+
+- ./controllers/contactsController (Common CRUD operations on Mongoose)
+- find(), findByID(), create(), findByIdAndDelete(), findByIdAndUpdate()
