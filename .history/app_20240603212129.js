@@ -1,8 +1,8 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-
-import { router as contactsRouter } from "./routes/api/contacts.js";
+import { router as contactsRouter } from "./routes/api/contactsRouter.js";
+import { router as usersRouter } from "./routes/api/usersRouter.js";
 
 const app = express();
 

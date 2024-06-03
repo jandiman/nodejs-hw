@@ -6,7 +6,7 @@ import { authenticateToken } from "../../middlewares/authenticateToken.js";
 
 const router = express.Router();
 
-router.get("/", ctrlWrapper(getAllContacts));
+router.get("/", authenticateToken, ctrlWrapper(getAllContacts));
 
 router.get("/:contactId", authenticateToken, ctrlWrapper(getContactById));
 
@@ -16,7 +16,10 @@ router.delete("/:contactId", authenticateToken, ctrlWrapper(deleteContactById));
 
 router.put("/:contactId", authenticateToken, ctrlWrapper(updateContactById));
 
-//prettier-ignore
-router.patch("/:contactId/favorite", authenticateToken, ctrlWrapper(updateStatusContact));
+router.patch(
+  "/:contactId/favorite",
+  authenticateToken,
+  ctrlWrapper(updateStatusContact)
+);
 
 export { router };

@@ -8,15 +8,14 @@ const router = express.Router();
 
 router.get("/", ctrlWrapper(getAllContacts));
 
-router.get("/:contactId", authenticateToken, ctrlWrapper(getContactById));
+router.get("/:contactId", ctrlWrapper(getContactById));
 
-router.post("/", authenticateToken, ctrlWrapper(addContact));
+router.post("/", ctrlWrapper(addContact));
 
-router.delete("/:contactId", authenticateToken, ctrlWrapper(deleteContactById));
+router.delete("/:contactId", ctrlWrapper(deleteContactById));
 
-router.put("/:contactId", authenticateToken, ctrlWrapper(updateContactById));
+router.put("/:contactId", ctrlWrapper(updateContactById));
 
-//prettier-ignore
-router.patch("/:contactId/favorite", authenticateToken, ctrlWrapper(updateStatusContact));
+router.patch("/:contactId/favorite", ctrlWrapper(updateStatusContact));
 
 export { router };

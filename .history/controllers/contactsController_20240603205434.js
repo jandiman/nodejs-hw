@@ -3,7 +3,7 @@ import { Contact } from "../models/contactsModel.js";
 import { contactValidation, favoriteValidation } from "../validations/validations.js";
 import { httpError } from "../helpers/httpError.js";
 
-const getAllContacts = async (req, res) => {
+const getAllContacts = async (_req, res) => {
   const { page = 1, limit = 20, favorite } = req.query;
   const query = favorite ? { favorite: true } : {};
 
