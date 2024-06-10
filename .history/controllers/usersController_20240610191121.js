@@ -133,4 +133,4 @@ const updateAvatar = async (req, res) => {
 };
 
 //prettier-ignore
-export { signupUser, loginUser, logoutUser, getCurrentUsers, updateUserSubscription, updateAvatar};
+export { signupUser, loginUser, logoutUser, getCurrentUsers, updateUserSubscription};

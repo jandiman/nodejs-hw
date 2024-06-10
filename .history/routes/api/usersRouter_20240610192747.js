@@ -17,7 +17,11 @@ router.get("/current", authenticateToken, ctrlWrapper(getCurrentUsers));
 
 router.patch("/", authenticateToken, ctrlWrapper(updateUserSubscription));
 
-//prettier-ignore
-router.patch("/avatars", authenticateToken, upload.single("avatar"), ctrlWrapper(updateAvatar));
+router.patch(
+  "/avatars",
+  authenticateToken,
+  upload.single("avatar"),
+  ctrlWrapper(updateAvatar)
+);
 
 export { router };
